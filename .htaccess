@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Block direct access to all .php files except index.php
+RewriteCond %{REQUEST_URI} "\.php$" [NC]
+RewriteCond %{REQUEST_URI} !/index\.php$ [NC]
+RewriteRule .* - [F,L]
+
+# Ensure that existing files and directories are accessible
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirect all other requests to index.php for routing
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
