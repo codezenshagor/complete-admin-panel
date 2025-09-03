@@ -1,4 +1,13 @@
- </div>
+  </div>
+
+<footer class="bg-light py-3 mt-5">
+  <div class="container">
+    <p class="mb-0 text-end text-muted">
+      &copy; 2025 Your Company. All rights reserved.
+    </p>
+  </div>
+</footer>
+
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->

@@ -134,6 +134,11 @@
       <button type="submit">Login</button>
     </form>
     <div class="about">
+      <div class="contact" style="margin-top:25px; padding:15px; border-radius:12px; background:#f9f9f9; border:1px solid #eee; font-size:14px; line-height:1.6;">
+    📞 <strong>WhatsApp:</strong> <a href="https://wa.me/8801773179639" target="_blank" style="color:#000; font-weight:600; text-decoration:none;">01773179639</a><br/>
+        🔗 <strong>Need Help?</strong> Contact us anytime for Email & Bulk SMS Support.
+      </div>
+
       We are the world’s No.1 company delivering elite technology solutions that redefine excellence. Our mission is simple: build powerful tools that empower industries globally.
     </div>
   </div>

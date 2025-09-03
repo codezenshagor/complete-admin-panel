@@ -46,27 +46,41 @@ class UserModel {
     }
 
     // Update user by id
-    public function updateUser($id, $data) {
-        if (!$this->isUnique($data['user_name'], $data['email'], $id)) {
-            return 0; // Duplicate found
-        }
-
-        $sql = "UPDATE users SET name=:name, user_name=:user_name, email=:email, role=:role, password=:password, 
-                address=:address, birthday=:birthday, nid_card=:nid_card WHERE id=:id";
-        $this->db->update($sql, [
-            ':name' => $data['name'],
-            ':user_name' => $data['user_name'],
-            ':email' => $data['email'],
-            ':role' => $data['role'],
-            ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
-            ':address' => $data['address'] ?? null,
-            ':birthday' => $data['birthday'] ?? null,
-            ':nid_card' => $data['nid_card'] ?? null,
-            ':id' => $id
-        ]);
-
-        return 1; // Update successful
+public function updateUser($id, $data) {
+    if (!$this->isUnique($data['user_name'], $data['email'], $id)) {
+        return 0; // Duplicate found
     }
+
+    // old password
+    $sqlOld = "SELECT password FROM users WHERE id=:id";
+    $oldPassword = $this->db->fetch($sqlOld, [':id' => $id]);
+
+    // new password check
+    if (isset($data['password']) && strlen($data['password']) >= 3) {
+        $finalPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+    } else {
+        $finalPassword = $oldPassword['password']; // পুরনো password রেখে দাও
+    }
+
+    $sql = "UPDATE users 
+            SET name=:name, user_name=:user_name, email=:email, role=:role, password=:password, 
+                address=:address, birthday=:birthday, nid_card=:nid_card 
+            WHERE id=:id";
+    $this->db->update($sql, [
+        ':name' => $data['name'],
+        ':user_name' => $data['user_name'],
+        ':email' => $data['email'],
+        ':role' => $data['role'],
+        ':password' => $finalPassword,
+        ':address' => $data['address'] ?? null,
+        ':birthday' => $data['birthday'] ?? null,
+        ':nid_card' => $data['nid_card'] ?? null,
+        ':id' => $id
+    ]);
+
+    return 1; // Update successful
+}
+
 
     // Delete user by id
     public function deleteUser($id) {
@@ -82,8 +96,16 @@ class UserModel {
 
     // Get all users
     public function getAllUsers() {
-        $sql = "SELECT * FROM users ORDER BY id DESC";
-        return $this->db->select($sql);
+        if($_SESSION['role']=='admin'){
+              $sql = "SELECT * FROM users ORDER BY id DESC";
+               return $this->db->select($sql);
+        }else{
+           
+            $sql = "SELECT * FROM users WHERE id=?"; 
+             return $this->db->select($sql,[$_SESSION['user_id']]);   
+        }
+      
+       
     }
 }
 

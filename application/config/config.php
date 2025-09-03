@@ -1,10 +1,14 @@
 <?php
+// $host = 'localhost';     // database host
+// $db   = 'zksoftt1_test'; // database name
+// $user = 'zksoftt1_test';     // database username
+// $pass = '9A7K3k6abd8wbE8.'; // database password
+// $charset = 'utf8mb4';    // charset
 $host = 'localhost';     // database host
 $db   = 'email_sender'; // database name
 $user = 'root';     // database username
 $pass = ''; // database password
 $charset = 'utf8mb4';    // charset
-
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
 $options = [
@@ -26,6 +30,14 @@ function flash_message() {
         $type = isset($_SESSION['success']) ? 'success' : 'error';
         $message = $_SESSION['success'] ?? $_SESSION['error'];
 
+        // Ensure message is string
+        if (is_array($message)) {
+            // Safely convert array to string
+            $message = implode(", ", array_map('strval', $message));
+        } else {
+            $message = strval($message);
+        }
+
         echo "<script>
         if (typeof toastr !== 'undefined') {
             toastr.options = {
@@ -38,8 +50,16 @@ function flash_message() {
         }
         </script>";
 
-     
         unset($_SESSION['success'], $_SESSION['error']);
+    }
+}
+
+
+function adminAuth(){
+    if($_SESSION['role']!='admin'){
+        $_SESSION['error'] = "This page only access admin";
+        header("Location:/dashboard");
+        exit;
     }
 }
 ?>

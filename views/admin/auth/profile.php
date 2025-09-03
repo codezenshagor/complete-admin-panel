@@ -1,4 +1,4 @@
-<?php
+<?php 
 $userModel = new UserModel($db);
 $auth = new LoginModel($db);
 
@@ -10,75 +10,131 @@ if (!$auth->checkLogin()) {
 $userId = $_SESSION['user_id'];
 $user = $userModel->getUserById($userId);
 
-$success = $error = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
+    $name       = trim($_POST['name'] ?? '');
+    $username   = trim($_POST['username'] ?? '');
+    $email      = trim($_POST['email'] ?? '');
+    $address    = trim($_POST['address'] ?? '');
+    $birthday   = trim($_POST['birthday'] ?? '');
+    $nid_card   = trim($_POST['nid_card'] ?? '');
 
+    // Unique check for username
+    $checkUser = $db->fetch("SELECT id FROM users WHERE user_name = ? AND id != ?", [$username, $userId]);
+    if ($checkUser) {
+        $_SESSION['error'] = "Username already taken.";
+        header("Location:/profile");
+        exit;
+    }
+
+    // Unique check for email
+    $checkEmail = $db->fetch("SELECT id FROM users WHERE email = ? AND id != ?", [$email, $userId]);
+    if ($checkEmail) {
+        $_SESSION['error'] = "Email already exists.";
+        header("Location:/profile");
+        exit;
+    }
+
+    // Update profile
+    $db->update("UPDATE users SET 
+                    name = ?, 
+                    user_name = ?, 
+                    email = ?, 
+                    address = ?, 
+                    birthday = ?, 
+                    nid_card = ?
+                 WHERE id = ?", 
+                [$name, $username, $email, $address, $birthday, $nid_card, $userId]);
+
+    $_SESSION['success'] = "Profile updated successfully!";
+    header("Location:/profile");
+    exit;
+}
+
+
+// Change password
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     $newPassword = $_POST['new_password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
     if ($newPassword !== $confirmPassword) {
-        $error = "❌ Passwords do not match.";
+         $_SESSION['error'] = "Passwords do not match.";
     } elseif (strlen($newPassword) < 6) {
-        $error = "❌ Password must be at least 6 characters.";
+        $_SESSION['error'] = "Password must be at least 6 characters.";
     } else {
         $user['password'] = $newPassword;
         $userModel->updateUser($userId, $user);
-        $success = "✅ Password updated successfully!";
+        $_SESSION['success'] = "Password updated successfully!";
     }
+    header("Location:/profile");
+    exit;
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title>User Profile</title>
     <?php include 'views/admin/section/css.php'; ?>
+    <style>
+        body { background: #f8f9fa; }
+        .profile-container { width: 95%; margin: 30px auto; }
+        .profile-card {
+            border: none;
+            border-radius: .75rem;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .btn-custom {
+            border-radius: .5rem;
+            padding: 0.5rem 1.5rem;
+        }
+    </style>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 <?php include 'views/admin/section/navber.php'; ?>
 
 <main class="app-main">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
+    <div class="profile-container">
+        <div class="card profile-card p-4">
+            <h4 class="mb-3">Edit Profile</h4>
 
-                <!-- Profile Card -->
-                <div class="card shadow-sm border-0 rounded-4 mb-3">
-                    <div class="card-header text-white text-center rounded-top-4"
-                         style="background: linear-gradient(135deg, #0d6efd, #6610f2);">
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="rounded-circle bg-light d-flex justify-content-center align-items-center mb-2"
-                                 style="width:80px; height:80px; font-size:32px;">
-                                <i class="fa-solid fa-user text-primary"></i>
-                            </div>
-                            <h5 class="mb-0"><?= htmlspecialchars($user['name']) ?></h5>
-                            <p class="mb-0 small">👤 <?= htmlspecialchars($user['role']) ?></p>
-                        </div>
-                    </div>
-                    <div class="card-body p-3">
-                        <ul class="list-group list-group-flush small">
-                            <li class="list-group-item"><b>Username:</b> <?= htmlspecialchars($user['user_name']) ?></li>
-                            <li class="list-group-item"><b>Email:</b> <?= htmlspecialchars($user['email']) ?></li>
-                            <li class="list-group-item"><b>Address:</b> <?= htmlspecialchars($user['address']) ?></li>
-                            <li class="list-group-item"><b>Birthday:</b> <?= htmlspecialchars($user['birthday']) ?></li>
-                            <li class="list-group-item"><b>NID Card:</b> <?= htmlspecialchars($user['nid_card']) ?></li>
-                        </ul>
-                    </div>
-                    <div class="card-footer text-center">
-                        <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                            <i class="fa-solid fa-key"></i> Change Password
-                        </button>
-                    </div>
+            <!-- Profile Update Form -->
+            <form method="POST" class="needs-validation" novalidate>
+                <input type="hidden" name="update_profile" value="1">
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" class="form-control" required>
                 </div>
 
-                <!-- Alerts -->
-                <?php if ($error): ?>
-                    <div class="alert alert-danger small mt-2"><?= $error ?></div>
-                <?php elseif ($success): ?>
-                    <div class="alert alert-success small mt-2"><?= $success ?></div>
-                <?php endif; ?>
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" value="<?= htmlspecialchars($user['user_name']) ?>" class="form-control" required>
+                </div>
 
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" name="address" value="<?= htmlspecialchars($user['address']) ?>" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Birthday</label>
+                    <input type="date" name="birthday" value="<?= htmlspecialchars($user['birthday']) ?>" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">NID Card</label>
+                    <input type="text" name="nid_card" value="<?= htmlspecialchars($user['nid_card']) ?>" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-custom">Save Changes</button>
+                <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+            </form>
         </div>
     </div>
 </main>
@@ -86,29 +142,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
 <!-- Password Change Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content rounded-4 shadow">
-            <div class="modal-header bg-dark text-white rounded-top-4">
-                <h6 class="modal-title"><i class="fa-solid fa-key"></i> Change Password</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content rounded-3 shadow border-0">
+            <div class="modal-header bg-light">
+                <h6 class="modal-title">Change Password</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" class="needs-validation" novalidate>
                 <div class="modal-body p-3">
                     <input type="hidden" name="change_password" value="1">
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">New Password</label>
-                        <input type="password" name="new_password" class="form-control form-control-sm" minlength="6" required>
+                    <div class="mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="password" name="new_password" class="form-control" minlength="6" required>
                         <div class="invalid-feedback">At least 6 characters.</div>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Confirm Password</label>
-                        <input type="password" name="confirm_password" class="form-control form-control-sm" required>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" name="confirm_password" class="form-control" required>
                         <div class="invalid-feedback">Passwords must match.</div>
                     </div>
                 </div>
                 <div class="modal-footer p-2">
-                    <button type="submit" class="btn btn-sm btn-primary w-100">
-                        <i class="fa-solid fa-save"></i> Update
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100 btn-custom">Update</button>
                 </div>
             </form>
         </div>
@@ -131,5 +185,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     })
 })();
 </script>
-</body>
-</html>
+

@@ -45,6 +45,8 @@ if (isset($_GET['key']) && $_GET['key'] === $valid_key) {
     
 } 
 
+
+
 $login = new LoginModel($db);
 if($request[0]=='' || $request[0]=='login'){
     if ($login->checkLogin()) {
@@ -70,6 +72,11 @@ if($request[0]=='' || $request[0]=='login'){
     require_once 'views/admin/auth/login.php';
     die();
 }
+
+
+
+
+
 
 if($request[0]=='logout'){
     session_unset();
@@ -128,10 +135,5 @@ foreach ($files as $folder => $filenames) {
         }
     }
 }
-
-
-
-
-
 
 ?>

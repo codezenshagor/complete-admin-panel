@@ -11,7 +11,7 @@
                         </a>
                     </li>
                     <li class="nav-item d-none d-md-block">
-                        <a href="#" class="nav-link">Home</a>
+                        <a href="/dashboard" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item d-none d-md-block">
                         <a href="#" class="nav-link">Contact</a>
@@ -175,7 +175,7 @@
                     <img src="<?=$urls?>views/admin/script/assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow">
                     <!--end::Brand Image-->
                     <!--begin::Brand Text-->
-                    <span class="brand-text fw-light">Email Marketing</span>
+                    <span class="brand-text fw-light">ADMIN PANEL</span>
                     <!--end::Brand Text-->
                 </a>
                 <!--end::Brand Link-->
@@ -186,29 +186,18 @@
                 <nav class="mt-2">
                     <!--begin::Sidebar Menu-->
                     <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-                        <li class="nav-item">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="nav-icon fa-solid fa-gauge-high"></i>
-                                <p>
-                                    Dashboard
-                                    <i class="nav-arrow fa-solid fa-angle-right"></i>
-                                </p>
+   
+
+                <li class="nav-item">
+                            <a href="<?=$urls?>dashboard" class="nav-link ">
+                              <i class="nav-icon fa-solid fa-gauge-high"></i>
+                                <p>Dashboard</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="<?=$urls?>dashboard" class="nav-link">
-                                        <i class="nav-icon fa-regular fa-circle"></i>
-                                        <p>Dashboard</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?=$urls?>blank" class="nav-link">
-                                        <i class="nav-icon fa-regular fa-circle"></i>
-                                        <p>Blank</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    </li>
+
+                <?php if($_SESSION['role']=='admin'):
+                 ?>
+
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link">
                                 <i class="nav-icon fa-solid fa-users"></i>
@@ -236,20 +225,20 @@
                         </li>
 
 
-                       
-                        <li class="nav-item">
-                            <a href="../docs/introduction.html" class="nav-link ">
-                                <i class="nav-icon fa-solid fa-download"></i>
-                                <p>information</p>
-                            </a>
-                        </li>
+
+                  
+
+                    <?php endif; ?>
+
+                 
+                   
 
                     <li class="nav-item">
                             <a href="/profile" class="nav-link ">
                                <i class="nav-icon fa-solid fa-user"></i>
                                 <p>Profile</p>
                             </a>
-                        </li>
+                    </li>
 
                         <li class="nav-item">
                             <a href="/logout" class="nav-link">

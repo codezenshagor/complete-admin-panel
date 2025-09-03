@@ -1,5 +1,4 @@
 <?php
-$db = new Database($pdo);
 $userModel = new UserModel($db);
 if (isset($_GET['delete_id'])) {
     $userModel->deleteUser($_GET['delete_id']);
@@ -36,8 +35,8 @@ $users = $userModel->getAllUsers();
         <!-- Users Table -->
         <div class="card">
             <div class="card-header"><h3>Users List</h3></div>
-            <div class="card-body">
-                <table class="table table-bordered">
+            <div class="card-body table-responsive">
+                <table class="table table-bordered p-2">
                     <thead>
                     <tr>
                         <th>ID</th>

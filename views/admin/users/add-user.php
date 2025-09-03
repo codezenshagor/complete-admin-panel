@@ -115,7 +115,7 @@ if (isset($_GET['edit_id'])) {
 
                     <button type="submit" class="btn btn-primary"><?= $editUser ? 'Update User' : 'Add User' ?></button>
                     <?php if ($editUser): ?>
-                        <a href="/user-list" class="btn btn-secondary">Cancel</a>
+                        <a href="/users-list" class="btn btn-secondary">Cancel</a>
                     <?php endif; ?>
                 </form>
             </div>
