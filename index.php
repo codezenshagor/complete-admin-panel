@@ -45,54 +45,7 @@ if (isset($_GET['key']) && $_GET['key'] === $valid_key) {
     
 } 
 
-
-
-$login = new LoginModel($db);
-if($request[0]=='' || $request[0]=='login'){
-    if ($login->checkLogin()) {
-        $_SESSION['success'] = "You are already logged in.";
-        header("Location:/dashboard");
-        exit;
-    }
-
-    if (isset($_POST['username_or_email']) && isset($_POST['password'])) {
-        $usernameOrEmail = $_POST['username_or_email'];
-        $password = $_POST['password'];
-        $remember = isset($_POST['remember']);
-
-        if ($login->login($usernameOrEmail, $password, $remember)) {
-            header("Location: /dashboard");
-            exit;
-        } else {
-            $_SESSION['error'] = "Invalid credentials.";
-            header("Location: /login");
-            exit;
-        }
-    }
-    require_once 'views/admin/auth/login.php';
-    die();
-}
-
-
-
-
-
-
-if($request[0]=='logout'){
-    session_unset();
-    session_destroy();
-    setcookie('remember_me', '', time() - 3600, "/"); // Expire the cookie
-     $_SESSION['success'] = "You have been logged out successfully.";
-    header("Location: /login");
-    exit;
-}
-
-if (!$login->checkLogin()) {
-    $_SESSION['error'] = "Please login to access the admin panel.";
-    header("Location:/login");
-    exit;
-}
-
+require_once("auth.php");
 
 $basePaths = [
     'config'     => __DIR__ . '/application/config/',

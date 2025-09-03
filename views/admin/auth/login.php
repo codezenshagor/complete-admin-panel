@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - World’s Login to Email Marketing</title>
+  <title>Demo Admin Panel - Login</title>
+  <meta name="description" content="Demo Admin Panel Login page. Securely access the demo dashboard and manage content.">
+  <meta name="keywords" content="demo admin panel, login, secure dashboard, <?= $urls ?>">
+  <meta name="author" content="Demo Admin Panel">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -75,7 +78,7 @@
     .remember {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       width: 100%;
       margin-bottom: 25px;
       font-size: 14px;
@@ -86,6 +89,16 @@
       margin-right: 10px;
       transform: scale(1.1);
       accent-color: #000;
+    }
+
+    .remember a {
+      color: #0073e6;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .remember a:hover {
+      text-decoration: underline;
     }
 
     button {
@@ -122,36 +135,36 @@
 </head>
 <body>
   <div class="container">
-    <h1>Login to Email Marketing</h1>
-    <div class="tagline">Trusted globally. Built for the future.</div>
+    <h1>Login to Demo Admin Panel</h1>
+    <div class="tagline">Access your demo dashboard at <strong><?= $urls ?></strong></div>
     <form method="POST" action="/login">
       <input type="text" name="username_or_email" placeholder="Email or Username" required />
       <input type="password" name="password" placeholder="Password" required />
       <div class="remember">
-        <input type="checkbox" name="remember" id="remember" />
-        <label for="remember">Remember Me</label>
+        <div>
+          <input type="checkbox" name="remember" id="remember" />
+          <label for="remember">Remember Me</label>
+        </div>
+        <a href="/forgot-password">Forgot Password?</a>
       </div>
       <button type="submit">Login</button>
     </form>
     <div class="about">
       <div class="contact" style="margin-top:25px; padding:15px; border-radius:12px; background:#f9f9f9; border:1px solid #eee; font-size:14px; line-height:1.6;">
-    📞 <strong>WhatsApp:</strong> <a href="https://wa.me/8801773179639" target="_blank" style="color:#000; font-weight:600; text-decoration:none;">01773179639</a><br/>
-        🔗 <strong>Need Help?</strong> Contact us anytime for Email & Bulk SMS Support.
+        Welcome to the <strong>Demo Admin Panel</strong>!  
+        Manage your content, users, and settings securely from one place.  
+        This is a demonstration panel designed for testing and learning purposes only.
       </div>
-
-      We are the world’s No.1 company delivering elite technology solutions that redefine excellence. Our mission is simple: build powerful tools that empower industries globally.
     </div>
   </div>
+
+  <!-- In your <head> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+  <!-- Before closing </body> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <?php flash_message(); ?>
 </body>
 </html>
-<!-- In your <head> -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
-<!-- Before closing </body> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-
-<?php
-flash_message();
-?>
